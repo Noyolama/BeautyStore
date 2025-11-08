@@ -8,7 +8,7 @@ const getAllActiveProducts = async (req, res) => {
   try {
     // --- Filtering Logic ---
     const queryObj = { ...req.query };
-    const excludedFields = ['keyword', 'page', 'limit'];
+    const excludedFields = ['keyword', 'page', 'limit', 'categories'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
     // Price filtering ($gte, $lte)
@@ -17,22 +17,59 @@ const getAllActiveProducts = async (req, res) => {
 
     let query = Product.find(JSON.parse(queryStr));
 
+    let filters = []
+
     // --- Searching Logic ---
     if (req.query.keyword) {
-      const keyword = {
+      filters.push({
         $or: [
           { name: { $regex: req.query.keyword, $options: 'i' } },
           { brand: { $regex: req.query.keyword, $options: 'i' } },
         ],
-      };
-      query = query.where(keyword);
+      })
     }
+
+    if (req.query.categories) {
+      filters.push(
+        {
+          category: {
+            $in: req.query.categories
+          }
+        },
+      )
+    }
+
+    console.log(req.query.categories)
+
+    query = query.where({
+      $and: filters
+    });
+
 
     const products = await query;
 
     res.status(200).json({
       success: true,
       count: products.length,
+      data: products,
+    });
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
+
+
+// @desc    Fetch new products
+// @route   GET /api/products/new
+// @access  Public
+const getNewProducts = async (req, res) => {
+  try {
+    // --- Filtering Logic ---
+    const products = await Product.find({}).sort({ createdAt: -1 }).limit(4)
+
+    res.status(200).json({
+      success: true,
       data: products,
     });
   } catch (error) {
@@ -173,6 +210,8 @@ const updateProduct = async (req, res) => {
       url: i?.preview,
     }))
 
+    let newImages = []
+
     // Check if new images are being uploaded
     if (req.files && req.files.length > 0) {
       // Step 1: Delete the old images from Cloudinary
@@ -182,13 +221,13 @@ const updateProduct = async (req, res) => {
       }
 
       // Step 2: Map the new file data
-      const newImages = req.files.map(file => ({
+      newImages = req.files.map(file => ({
         public_id: file.filename,
         url: file.path,
       }));
-
-      updateData.images = [...uploadedImages, ...newImages];
     }
+
+    updateData.images = [...uploadedImages, ...newImages];
 
     product = await Product.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
@@ -263,5 +302,6 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
-  getProductDetail
+  getProductDetail,
+  getNewProducts
 };

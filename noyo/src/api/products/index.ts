@@ -62,7 +62,13 @@ export const fetchPaginatedActiveProducts = async (filters: FilterType) => {
     const addons = {
         params: filters
     }
+
     const res = await api.get('/products/active', addons)
+    return res?.data?.data
+}
+
+export const fetchNewProducts = async () => {
+    const res = await api.get('/products/new')
     return res?.data?.data
 }
 

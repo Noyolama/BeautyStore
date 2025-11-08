@@ -1,5 +1,5 @@
-const DEFAULT_CURRENCY = 'NPR';
-const DEFAULT_LOCALE = 'ne-NP';
+const DEFAULT_CURRENCY = 'USD';
+const DEFAULT_LOCALE = 'en-US';
 
 
 export function formatCurrency(amount: string | number, currency = DEFAULT_CURRENCY, locale = DEFAULT_LOCALE) {

@@ -1,22 +1,19 @@
+import { ChartAreaInteractive } from "./_components/ChartAreaInteractive";
+import { SectionCards } from "./_components/DashboardStats";
+
 export default function Dashboard() {
-    return (
-        <>
-             <div className="flex gap-2">
-          {[...new Array(4)].map((_, idx) => (
-            <div
-              key={"first-array-demo-1" + idx}
-              className="h-20 w-full animate-pulse rounded-lg bg-gray-100 dark:bg-neutral-800"
-            ></div>
-          ))}
+  return (
+    <>
+      <div className="flex flex-1 flex-col">
+        <div className="@container/main flex flex-1 flex-col gap-2">
+          <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+            <SectionCards />
+            <div className="px-4 lg:px-6">
+              <ChartAreaInteractive />
+            </div>
+          </div>
         </div>
-        <div className="flex flex-1 gap-2">
-          {[...new Array(2)].map((_, idx) => (
-            <div
-              key={"second-array-demo-1" + idx}
-              className="h-full w-full animate-pulse rounded-lg bg-gray-100 dark:bg-neutral-800"
-            ></div>
-          ))}
-        </div>
-        </>
-    )
+      </div>
+    </>
+  )
 }

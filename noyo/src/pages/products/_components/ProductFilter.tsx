@@ -1,11 +1,14 @@
+import { getAllCategory } from "@/api";
+import { SmartForm } from "@/components/custom/SmartForm";
 import { Button } from "@/components/ui/button";
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Field, FieldDescription, FieldGroup, FieldLegend, FieldSet } from "@/components/ui/field";
 import { useForm } from "@tanstack/react-form";
+import { useQuery } from "@tanstack/react-query";
 import z from "zod";
 
 const filterFormSchema = z.object({
-    keyword: z.string()
+    keyword: z.string(),
+    categories: z.array(z.string())
 })
 
 interface ProductFilterProps {
@@ -14,9 +17,15 @@ interface ProductFilterProps {
 }
 
 export const ProductFilter = ({ filters, onChange }: ProductFilterProps) => {
+    const { data: categories, isLoading } = useQuery({
+        queryKey: ['all-filter-categories'],
+        queryFn: () => getAllCategory(),
+    })
+
     const form = useForm({
         defaultValues: {
             keyword: filters?.keyword || '',
+            categories: filters?.categories || '',
         },
         validators: {
             onSubmit: filterFormSchema
@@ -26,56 +35,46 @@ export const ProductFilter = ({ filters, onChange }: ProductFilterProps) => {
         },
         formId: 'client-product-filter'
     })
+
+    if(isLoading) {
+        return <div>Loading...</div>
+    }
     return (
         <div className="w-full rounded-lg border p-6">
-            <form id="client-product-filter" onSubmit={(e) => {
-                e.preventDefault()
-                form.handleSubmit()
-            }}>
                 <FieldGroup>
                     <FieldSet>
                         <FieldLegend>Filter</FieldLegend>
                         <FieldDescription>
                             Fill up these fields to filter products.
                         </FieldDescription>
-                        <FieldGroup>
-                            <form.Field
-                                name="keyword"
-                                children={(field) => {
-                                    const isInvalid =
-                                        field.state.meta.isTouched && !field.state.meta.isValid
-                                    return (
-                                        <Field data-invalid={isInvalid}>
-                                            <FieldLabel htmlFor="keyword">
-                                                Search
-                                            </FieldLabel>
-                                            <Input
-                                                id="keyword"
-                                                name="keyword"
-                                                value={field.state.value}
-                                                onChange={(e) => field.handleChange(e.target.value)}
-                                                placeholder="Eg: Cetaphil toner"
-                                            />
-                                            {isInvalid && (
-                                                <FieldError errors={field.state.meta.errors} />
-                                            )}
-                                        </Field>
-                                    )
-                                }}
-                            >
-
-                            </form.Field>
-                        </FieldGroup>
+                        <SmartForm
+                            form={form}
+                            inputItems={[
+                                {
+                                    key: 'keyword',
+                                    label: 'Search',
+                                    placeholder: "Eg: Cetaphil toner"
+                                },
+                                {
+                                    key: 'categories',
+                                    label: 'Categories',
+                                    placeholder: 'Select Categories',
+                                    items: categories,
+                                    labelKey: 'name',
+                                    valueKey: '_id',
+                                    type: 'multi-select',
+                                }
+                            ]}
+                        />
                     </FieldSet>
 
                     <Field orientation="horizontal">
                         <Button variant="outline" type="button" onClick={() => form.reset()}>
                             Reset
                         </Button>
-                        <Button type="submit">Filter</Button>
+                        <Button type="submit" form="client-product-filter">Filter</Button>
                     </Field>
                 </FieldGroup>
-            </form>
         </div>
     )
 }

@@ -10,19 +10,6 @@ import { cn } from "@/lib/utils";
 import { useRemoveWishlistItem } from "@/hooks/wishlist/use-remove-wishlist-item";
 import { CustomImage } from "@/components/atoms/CustomImage";
 
-type ProductImage = {
-    _id: string;
-    public_id: string;
-    url: string;
-}
-
-export type Product = {
-    _id: string;
-    images: ProductImage[];
-    name: string;
-    price: number;
-}
-
 interface ProductListCardProps {
     product: Product
 }

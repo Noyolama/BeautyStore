@@ -65,14 +65,25 @@ const renderInputField = ({ type, field, item }: RenderInputFieldProps) => {
         case "password":
             return <Input {...commonProps} type="password" />
         case "multi-select":
-            return <MultiSelect
-                options={item?.options || []}
-                defaultValue={field.state.value || [] as string[]}
-                onBlur={field.handleBlur}
-                onValueChange={(value) => field.handleChange(value)}
-                aria-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
-                placeholder={item.placeholder || item.label}
-            />
+            {
+                const items = item?.labelKey
+                    ?
+                    item?.items?.map((i) => ({
+                        label: i?.name,
+                        value: i?._id
+                    }))
+                    :
+                    item?.options
+
+                return <MultiSelect
+                    options={items || []}
+                    defaultValue={field.state.value || [] as string[]}
+                    onBlur={field.handleBlur}
+                    onValueChange={(value) => field.handleChange(value)}
+                    aria-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
+                    placeholder={item.placeholder || item.label}
+                />
+            }
         case "single-select":
             return <Select
                 defaultValue={field.state.value || [] as string[]}

@@ -1,12 +1,15 @@
 import { useQuery } from "@tanstack/react-query"
 import { ProductFilter } from "./_components/ProductFilter"
-import { ProductListCard, type Product } from "./_components/ProductListCard"
+import { ProductListCard } from "./_components/ProductListCard"
 import { fetchPaginatedActiveProducts } from "@/api"
 import { useState } from "react"
 import { NoData } from "@/components/layouts/NoData"
+import { useSearchParams } from "react-router"
 
 const PublicProducts = () => {
-    const [filters, setFilters] = useState<CommonFilter>({ keyword: "" })
+    const [ queryParams ] = useSearchParams()
+
+    const [filters, setFilters] = useState<CommonFilter>({ keyword: "", categories: queryParams.get('category') ? [queryParams.get('category')] : [] })
     const { data: products, isLoading } = useQuery({
         queryKey: ['active-products', filters],
         queryFn: () => fetchPaginatedActiveProducts(filters),

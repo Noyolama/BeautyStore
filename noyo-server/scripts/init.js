@@ -1,4 +1,17 @@
 const User = require('../models/userModel');
+const Category = require('../models/categoryModel');
+
+const defaultCategories = [
+    {
+        name: 'SkinCare'
+    },
+    {
+        name: 'BodyCare',
+    },
+    {
+        name: 'HairCare'
+    }
+]
 
 const initializeApp = async () => {
     try {
@@ -12,6 +25,7 @@ const initializeApp = async () => {
 
         console.log('🌱 Checking for admin user...');
         const adminUser = await User.findOne({ email: adminCredentials.email });
+        const categories = await Category.find({ });
 
         if (adminUser) {
             console.log('🌱 Admin user already exists.');
@@ -21,7 +35,13 @@ const initializeApp = async () => {
             console.log('🌱 Admin user created successfully.');
         }
 
+        if(!(categories?.length > 0)) {
+            await Category.create(defaultCategories)
+            console.log('🌱 Category created successfully.');
+        }
+
         console.log('✅ App initialized successfully!');
+
     } catch (error) {
         console.error('❌ Seeding failed:', error);
     }

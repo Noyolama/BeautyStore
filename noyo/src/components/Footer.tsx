@@ -1,6 +1,12 @@
+import { getAllCategory } from "@/api";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
+  const { data: categories } = useQuery({
+    queryKey: ['footer-categories'],
+    queryFn: () => getAllCategory(),
+  })
   return (
     <footer className="bg-white p-4 relative text-black border-t">
       <div className="max-w-4xl mx-auto px-6 py-4 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -8,9 +14,15 @@ export default function Footer() {
         <div>
           <h3 className="font-bold mb-1 uppercase text-sm">Link Info</h3>
           <ul className="space-y-1 text-black text-sm">
-            <li>Skin Care</li>
-            <li>Makeup</li>
-            <li>New Product</li>
+            {
+              categories && categories.slice(0, 3)?.map((cat, index) => (
+                <li key={index}>
+                  <Link to={`/products?category=${cat?._id}`} className="hover:underline">
+                    {cat?.name}
+                  </Link>
+                </li>
+              ))
+            }
           </ul>
         </div>
 
@@ -18,15 +30,15 @@ export default function Footer() {
         <div>
           <h3 className="font-bold mb-1 uppercase text-sm">Support</h3>
           <ul className="space-y-1 text-black text-sm">
-               <li>
-                   <Link to="/contact" className="hover:underline">Contact Us</Link>
-                </li>
-                <li>
-                   <Link to="/terms-condition" className="hover:underline">Terms & Condition</Link>
-                </li>
-                <li>
-                   <Link to="/privacy-policy" className="hover:underline">Privacy & Policy</Link>
-                </li>
+            <li>
+              <Link to="/contact" className="hover:underline">Contact Us</Link>
+            </li>
+            <li>
+              <Link to="/terms-condition" className="hover:underline">Terms & Condition</Link>
+            </li>
+            <li>
+              <Link to="/privacy-policy" className="hover:underline">Privacy & Policy</Link>
+            </li>
           </ul>
         </div>
 

@@ -9,6 +9,7 @@ const {
   deleteProduct,
   getAllProducts,
   getProductDetail,
+  getNewProducts,
 } = require('../controllers/productController');
 
 // Import middleware
@@ -17,6 +18,7 @@ const upload = require('../middleware/upload');
 
 // Public route for getting products
 router.route('/active').get(getAllActiveProducts);
+router.route('/new').get(getNewProducts);
 router.route('/:id').get(getProductById);
 
 // Admin-only routes

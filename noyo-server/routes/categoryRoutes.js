@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 router.route('/').post(protect, authorize('admin'), createCategory);
-router.route('/').get(protect, authorize('admin'), getAllCategory);
+router.route('/').get(getAllCategory);
 router.route('/:id').delete(protect, authorize('admin'), removeCategory);
 
 module.exports = router;
