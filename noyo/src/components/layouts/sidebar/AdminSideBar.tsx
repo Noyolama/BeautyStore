@@ -24,6 +24,11 @@ const sideMenus = [
     icon: SquareTerminal,
     isActive: true,
   },
+    {
+    title: "Categories",
+    url: "/admin/categories",
+    icon: List,
+  },
   {
     title: "Products",
     url: "/admin/products",

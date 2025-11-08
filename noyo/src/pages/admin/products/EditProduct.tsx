@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/field"
 import { skinTypes } from "@/constants"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { fetchProductDetailById, updateProduct, type Product } from "@/api"
+import { fetchProductDetailById, getAllCategory, updateProduct, type Product } from "@/api"
 import { useNavigate, useParams } from "react-router"
 import { SmartForm } from "@/components/custom/SmartForm"
 import { useEffect } from "react"
@@ -61,6 +61,11 @@ export default function EditProduct() {
         }
     })
 
+    const { data: categories } = useQuery({
+        queryKey: ['active-categories-for-product-edit'],
+        queryFn: () => getAllCategory(),
+    })
+
     const form = useForm({
         defaultValues: {
             name: product?.name || '',
@@ -76,7 +81,6 @@ export default function EditProduct() {
             onSubmit: editProductFormSchema,
         },
         onSubmit: async ({ value }) => {
-            console.log(value)
             if (!id) return toast.error('ID not found')
             mutation.mutate({ id, data: value })
         },
@@ -89,7 +93,7 @@ export default function EditProduct() {
         }
     }, [isLoading, form])
 
-    if(isLoading) {
+    if (isLoading) {
         return (
             <div>Loading...</div>
         )
@@ -120,6 +124,10 @@ export default function EditProduct() {
                                 {
                                     key: 'category',
                                     label: 'Product Category',
+                                    type: 'single-select',
+                                    items: categories || [],
+                                    labelKey: 'name',
+                                    valueKey: '_id',
                                 },
                                 {
                                     key: 'skinType',

@@ -27,8 +27,9 @@ const productSchema = new mongoose.Schema(
       },
     ],
     category: {
-      type: String,
-      required: [true, 'Please enter product category (e.g., Skincare, Makeup, Haircare)'],
+      type: mongoose.Schema.ObjectId,
+      ref: 'Category',
+      required: true,
     },
     // New field for Brand
     brand: {

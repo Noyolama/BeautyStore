@@ -87,7 +87,7 @@ const ProductDetail = () => {
                         |
                         <Label className="font-light">Category:</Label>
                         <div className="font-medium">
-                            {product?.category}
+                            {product?.category?.name}
                         </div>
                     </div>
 

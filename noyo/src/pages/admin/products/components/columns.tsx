@@ -42,6 +42,7 @@ export const useProductColumns = (): ColumnDef<Product>[] => {
             accessorKey: "category",
             size: 50,
             header: "Category",
+            cell: ({ row }) => row?.original?.category?.name
         },
         {
             accessorKey: "brand",

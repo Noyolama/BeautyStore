@@ -12,9 +12,10 @@ import { MultipleImageUpload } from "../uploader/MultipleImageUpload"
 import { cn } from "@/lib/utils"
 import { SimpleEditor } from "../tiptap-templates/simple/simple-editor"
 import type { AnyFieldApi } from "@tanstack/react-form"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select"
 
 
-type InputTypes = "text" | "number" | "textarea" | "custom" | "multi-select" | "multi-image" | "password" | "html"
+type InputTypes = "text" | "number" | "textarea" | "custom" | "multi-select" | "multi-image" | "password" | "html" | "single-select"
 
 interface inputItem {
     key: string
@@ -26,6 +27,9 @@ interface inputItem {
     colSpan?: number // Tailwind supports 1-12
     rowSpan?: number
     className?: string
+    items?: any[],
+    labelKey?: string,
+    valueKey?: string,
 }
 
 interface SmartFormProps {
@@ -69,6 +73,28 @@ const renderInputField = ({ type, field, item }: RenderInputFieldProps) => {
                 aria-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
                 placeholder={item.placeholder || item.label}
             />
+        case "single-select":
+            return <Select
+                defaultValue={field.state.value || [] as string[]}
+                onValueChange={(value) => field.handleChange(value)}
+                aria-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
+            >
+                <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder={item?.placeholder || 'Select'} />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                        <SelectLabel>{item?.label || 'Select'}</SelectLabel>
+                        {
+                            item?.items?.map((opt: any, index) => (
+                                <SelectItem value={item?.valueKey ? opt[item?.valueKey] : opt} key={index} className="rounded-lg">
+                                    {item?.labelKey ? opt[item?.labelKey] : opt}
+                                </SelectItem>
+                            ))
+                        }
+                    </SelectGroup>
+                </SelectContent>
+            </Select>
         case "html":
             return <SimpleEditor
                 value={field.state.value}

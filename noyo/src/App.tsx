@@ -28,6 +28,7 @@ import ProductDetail from "./pages/products/ProductDetail";
 import AdminOrderDetail from "./pages/admin/orders/OrderDetail";
 import Forbidden from "./pages/Forbidden";
 import MyOrders from "./pages/MyOrders";
+import Categories from "./pages/admin/categories";
 
 function App() {
   return (
@@ -69,6 +70,8 @@ function App() {
 
             <Route path="orders" element={<AdminOrders />} />
             <Route path="orders/:orderId/detail" element={<AdminOrderDetail />} />
+
+            <Route path="categories" element={<Categories/>} />
           </Route>
         </Route>
         {/* Admin pages */}

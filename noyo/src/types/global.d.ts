@@ -14,7 +14,7 @@ type Product = {
     name: string;
     description: string;
     price: number;
-    category: string;
+    category: Category;
     brand: string;
     skinType: string[];
     stock: number;
@@ -46,6 +46,11 @@ type Order = {
     paidAt: string;
     shippingPrice: number;
     shippingInfo: Shipping;
+}
+
+type Category = {
+    _id: number;
+    name: string;
 }
 
 type CommonFilter = {

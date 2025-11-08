@@ -23,7 +23,6 @@ const getAllActiveProducts = async (req, res) => {
         $or: [
           { name: { $regex: req.query.keyword, $options: 'i' } },
           { brand: { $regex: req.query.keyword, $options: 'i' } },
-          { category: { $regex: req.query.keyword, $options: 'i' } },
         ],
       };
       query = query.where(keyword);
@@ -47,7 +46,7 @@ const getAllActiveProducts = async (req, res) => {
 // @access  Public
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate('category', 'name');
 
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
@@ -106,7 +105,10 @@ const getAllProducts = async (req, res) => {
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-    let query = Product.find(JSON.parse(queryStr));
+    let query = Product.find(JSON.parse(queryStr)).populate(
+      'category',
+      'name'
+    );
 
     // --- Searching Logic ---
     if (req.query.keyword) {
@@ -114,7 +116,6 @@ const getAllProducts = async (req, res) => {
         $or: [
           { name: { $regex: req.query.keyword, $options: 'i' } },
           { brand: { $regex: req.query.keyword, $options: 'i' } },
-          { category: { $regex: req.query.keyword, $options: 'i' } },
         ],
       };
       query = query.where(keyword);

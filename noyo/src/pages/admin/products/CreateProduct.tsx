@@ -14,8 +14,8 @@ import {
     Field,
 } from "@/components/ui/field"
 import { skinTypes } from "@/constants"
-import { useMutation } from "@tanstack/react-query"
-import { createProduct } from "@/api"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import { createProduct, getAllCategory } from "@/api"
 import { useNavigate } from "react-router"
 import { SmartForm } from "@/components/custom/SmartForm"
 import z from "zod"
@@ -31,7 +31,7 @@ const createProductFormSchema = z.object({
             const decimalPlaces = (value.toString().split('.')[1] || '').length;
             return decimalPlaces <= 2;
         }),
-    category: z.string().min(2, 'Required'),
+    category: z.string().min(1, 'Required'),
     brand: z.string().min(2, 'Required'),
     skinType: z.array(z.string()).nonempty("Select at least one."),
     stock: z.number()
@@ -50,6 +50,11 @@ export default function CreateProduct() {
         }
     })
 
+    const { data: categories } = useQuery({
+        queryKey: ['active-categories'],
+        queryFn: () => getAllCategory(),
+    })
+
     const form = useForm({
         defaultValues: {
             name: "",
@@ -65,7 +70,7 @@ export default function CreateProduct() {
             onSubmit: createProductFormSchema,
         },
         onSubmit: async ({ value }) => {
-            mutation.mutate(value)
+            mutation.mutate(value!)
         },
         formId: 'create-product-form'
 
@@ -97,6 +102,10 @@ export default function CreateProduct() {
                                 {
                                     key: 'category',
                                     label: 'Product Category',
+                                    type: 'single-select',
+                                    items: categories || [],
+                                    labelKey: 'name',
+                                    valueKey: '_id',
                                 },
                                 {
                                     key: 'skinType',
