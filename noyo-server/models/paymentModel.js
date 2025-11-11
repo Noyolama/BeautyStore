@@ -1,0 +1,45 @@
+const mongoose = require('mongoose');
+
+const transactionSchema = new mongoose.Schema(
+    {
+        customerDetails: {
+            name: {
+                type: String,
+                required: true,
+            },
+            email: {
+                type: String,
+                required: true,
+            },
+            phone: {
+                type: String,
+                required: true,
+            },
+        },
+        order_id: {
+            type: String,
+            required: true,
+        },
+        amount: {
+            type: Number,
+            required: true,
+            min: 0,
+        },
+        payment_gateway: {
+            type: String,
+            required: true,
+            enum: ["esewa", "khalti"],
+        },
+        status: {
+            type: String,
+            required: true,
+            enum: ["PENDING", "COMPLETED", "FAILED", "REFUNDED"],
+            default: "PENDING",
+        },
+    },
+    {
+        timestamps: true,
+    }
+);
+
+module.exports = mongoose.model("Transaction", transactionSchema);

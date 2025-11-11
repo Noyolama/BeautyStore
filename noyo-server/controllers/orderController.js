@@ -33,7 +33,7 @@ const createOrder = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      order,
+      data: order,
     });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });

@@ -33,7 +33,21 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <ConfirmProvider>
                 <ReactQueryLoadingSync />
                 <App />
-                <Toaster />
+                <Toaster
+                  position="top-right"
+                  richColors
+                  toastOptions={{
+                    style: {
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                    },
+                    classNames: {
+                      toast: "toast-base",          // general styles
+                      success: "toast-success",     // success-specific
+                      error: "toast-error",         // error-specific
+                    },
+                  }}
+                />
               </ConfirmProvider>
             </AuthProvider>
           </WishlistProvider>

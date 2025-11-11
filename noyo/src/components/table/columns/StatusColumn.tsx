@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { IconLoader } from "@tabler/icons-react"
-import { Ban, Ship, Truck } from "lucide-react";
+import { Ban, Check, Ship, Truck } from "lucide-react";
 
 const parseStatusConfig = (status: string) => {
     if (!status) return null
@@ -11,6 +11,13 @@ const parseStatusConfig = (status: string) => {
         case 'processing':
             return {
                 label: 'Processing',
+                icon: IconLoader,
+            }
+            break;
+        
+        case 'pending':
+            return {
+                label: 'Pending',
                 icon: IconLoader,
             }
             break;
@@ -27,6 +34,14 @@ const parseStatusConfig = (status: string) => {
             return {
                 label: 'Delivered',
                 icon: Truck,
+                customClass: 'bg-green-400 text-white',
+            }
+            break;
+        
+        case 'completed':
+            return {
+                label: 'Completed',
+                icon: Check,
                 customClass: 'bg-green-400 text-white',
             }
             break;

@@ -4,7 +4,7 @@ import { formatCurrency, getInitials, simplifyDate } from "@/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Status from "@/components/table/columns/StatusColumn"
 import { useNavigate } from "react-router"
-
+import NoImage from '/images/no-image.jpg'
 
 type User = {
     _id: string;
@@ -122,7 +122,7 @@ export const useOrderDetailColumns = (): ColumnDef<any>[] => {
                 return (
                     <div className="flex gap-2 items-center">
                         <Avatar className="h-8 w-8 rounded-lg">
-                            <AvatarImage src={orderItem?.image} alt="product-image" />
+                            <AvatarImage src={orderItem?.image || NoImage} alt="product-image" />
                         </Avatar>
                         <div className="grid flex-1 text-left text-sm leading-tight">
                             <span className="truncate font-medium">{orderItem?.name}</span>

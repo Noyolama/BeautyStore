@@ -22,10 +22,18 @@ type Product = {
 }
 
 type Shipping = {
+    name: string;
+    phone?: number;
     address: string;
     city: string;
     postalCode: string;
     country: string;
+}
+
+type Payment = {
+    id: string;
+    status: string;
+    transactionId: string
 }
 
 type OrderItem = {
@@ -46,6 +54,7 @@ type Order = {
     paidAt: string;
     shippingPrice: number;
     shippingInfo: Shipping;
+    paymentInfo?: Payment;
 }
 
 type Category = {

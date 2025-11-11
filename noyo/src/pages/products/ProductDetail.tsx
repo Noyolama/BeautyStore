@@ -1,4 +1,5 @@
 import { fetchProductDetailForPublic } from "@/api";
+import { fetchRecommendationsBasedOnProduct } from "@/api/recommendations";
 import GalleryMode from "@/components/carousel/GalleryMode";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -9,15 +10,24 @@ import { useRemoveWishlistItem } from "@/hooks/wishlist/use-remove-wishlist-item
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
-import { HeartIcon } from "lucide-react";
+import { HeartIcon, MoveRight } from "lucide-react";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
+import { ProductListCard } from "./_components/ProductListCard";
 
 const ProductDetail = () => {
     const { productId } = useParams()
     const navigate = useNavigate()
     const { currentUser } = useAuth()
+    const { data: similarProducts } = useQuery({
+        queryKey: ['recommended-products', productId],
+        queryFn: () => fetchRecommendationsBasedOnProduct(productId!),
+        enabled: !!productId,
+        refetchOnWindowFocus: false, // don't refetch on tab change
+        refetchOnReconnect: false,   // don't refetch on reconnect
+        retry: false,
+    })
     const { data: product, isLoading: isDataFetching } = useQuery({
         queryKey: ['product-detail', productId],
         queryFn: () => fetchProductDetailForPublic(productId!),
@@ -138,6 +148,20 @@ const ProductDetail = () => {
                     </div>
                 </div>
             </div>
+
+            <div className="my-16">
+            <div className="flex justify-between mb-2">
+              <h1 className="text-3xl font-semibold">You may also like</h1>
+              <Link to={'/products'} className="flex gap-2 items-center hover:underline hover:text-primary text-small">Explore More <MoveRight size={15} /></Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {
+                similarProducts && similarProducts?.map((p: Product, index: number) => (
+                  <ProductListCard key={index} product={p} />
+                ))
+              }
+            </div>
+          </div>
         </>
     )
 }

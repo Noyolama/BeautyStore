@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useAddtoCart, useCart } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router";
+import { formatCurrency } from "@/utils";
 
 export default function Cart() {
   const { cartItems, getTotalPrice } = useCart();
@@ -50,7 +51,7 @@ export default function Cart() {
                 <Link to={`/products/${item?.product?._id}/detail`} className="hover:text-primary hover:underline">
                   <h2 className="font-semibold">{item?.product?.name}</h2>
                 </Link>
-                <p className="text-gray-600">${item?.product?.price}</p>
+                <p className="text-gray-600">{formatCurrency(item?.product?.price)}</p>
               </div>
 
               <div className="flex items-center gap-2">
@@ -79,7 +80,7 @@ export default function Cart() {
 
           <div className="flex justify-between items-center mt-4 font-semibold text-gray-800">
             <span>Total:</span>
-            <span>${totalPrice.toFixed(2)}</span>
+            <span>{formatCurrency(totalPrice)}</span>
           </div>
 
           <Button className="w-full mt-4 bg-pink-500 text-white py-2 rounded hover:bg-pink-600" onClick={() => {

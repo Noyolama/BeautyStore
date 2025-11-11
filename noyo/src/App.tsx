@@ -27,8 +27,11 @@ import AdminOrders from "./pages/admin/orders";
 import ProductDetail from "./pages/products/ProductDetail";
 import AdminOrderDetail from "./pages/admin/orders/OrderDetail";
 import Forbidden from "./pages/Forbidden";
-import MyOrders from "./pages/MyOrders";
+import MyOrders from "./pages/orders/MyOrders";
 import Categories from "./pages/admin/categories";
+import Success from "./components/payment/Success";
+import Failure from "./components/payment/Failure";
+import OrderDetail from "./pages/orders/OrderDetail";
 
 function App() {
   return (
@@ -49,14 +52,17 @@ function App() {
           <Route path="/test" element={<Test />} />
           <Route path="/products" element={<PublicProducts />} />
           <Route path="/products/:productId/detail" element={<ProductDetail />} />
-          <Route path="/orders" element={<MyOrders />} />
 
           <Route element={<ProtectedRoute />}>
+            <Route path="/orders" element={<MyOrders />} />
+            <Route path="/orders/:orderId/detail" element={<OrderDetail />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/shiping" element={<Shiping />} />
+            <Route path="/payment-success" element={<Success />} />
+            <Route path="/payment-failure" element={<Failure />} />
           </Route>
 
-        <Route path='/403' element={<Forbidden />} />
+          <Route path='/403' element={<Forbidden />} />
         </Route>
 
 
@@ -71,7 +77,7 @@ function App() {
             <Route path="orders" element={<AdminOrders />} />
             <Route path="orders/:orderId/detail" element={<AdminOrderDetail />} />
 
-            <Route path="categories" element={<Categories/>} />
+            <Route path="categories" element={<Categories />} />
           </Route>
         </Route>
         {/* Admin pages */}

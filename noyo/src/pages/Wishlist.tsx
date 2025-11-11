@@ -2,6 +2,7 @@
 // @ts-nocheck
 import { useWishlist } from "@/hooks/wishlist";
 import { useRemoveWishlistItem } from "@/hooks/wishlist/use-remove-wishlist-item";
+import { formatCurrency } from "@/utils";
 import { Link } from "react-router-dom";
 
 export default function Wishlist() {
@@ -45,7 +46,7 @@ export default function Wishlist() {
                 <Link to={`/products/${item?._id}/detail`} className="hover:text-primary hover:underline">
                   <h2 className="font-semibold">{item.name}</h2>
                 </Link>
-                <p className="text-gray-600">${item.price}</p>
+                <p className="text-gray-600">{formatCurrency(item.price)}</p>
               </div>
               <button
                 onClick={() => handleRemoveItem(item._id)}

@@ -19,14 +19,14 @@ const Shiping = () => {
     const placeOrder = useMutation({
         mutationFn: (data: Partial<Order>) => createOrder(data),
         onSuccess: (data) => {
-            console.log(data)
             toast.success('Order placed successfully.')
             queryClient.invalidateQueries({ queryKey: ['carts'] });
-            navigate('/')
+            navigate(`/orders/${data?._id}/detail`)
         }
     })
     const form = useForm({
         defaultValues: {
+            name: '',
             address: '',
             city: '',
             postalCode: '',
@@ -36,7 +36,7 @@ const Shiping = () => {
             onSubmit: ShipingSchema
         },
         onSubmit: ({ value }) => {
-            if(cartItems?.length <= 0) {
+            if (cartItems?.length <= 0) {
                 toast.error('You need to add products in cart first.')
                 return
             }
@@ -51,11 +51,6 @@ const Shiping = () => {
                         product: i?.product?._id,
                     }
                 }),
-                // TODO:Integrate payment later on
-                paymentInfo: {
-                    id: 'Test',
-                    status: 'Paid',
-                },
                 itemsPrice: itemsTotal,
                 shippingPrice: 50,
             }
@@ -92,7 +87,17 @@ const Shiping = () => {
                 <CardContent>
                     <SmartForm
                         form={form}
+                        className="grid grid-cols-1 md:grid-cols-2 gap-4"
                         inputItems={[
+                            {
+                                key: 'name',
+                                label: 'Full Name',
+                            },
+                            {
+                                key: 'phone',
+                                label: 'Phone Number',
+                                type: 'number'
+                            },
                             {
                                 key: 'address',
                                 label: 'Address',

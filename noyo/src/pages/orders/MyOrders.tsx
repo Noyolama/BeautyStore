@@ -11,11 +11,13 @@ import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle }
 import { formatCurrency, simplifyDate } from "@/utils"
 import { Separator } from "@/components/ui/separator"
 import { DataTable } from "@/components/table/DataTable"
-import { useOrderDetailColumns } from "./admin/orders/components/columns"
+import { useOrderDetailColumns } from "../admin/orders/components/columns"
 import { useMemo, useState } from "react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { NoData } from "@/components/layouts/NoData"
+import { EyeIcon } from "lucide-react"
+import { Link } from "react-router"
 
 
 const OrderCard = ({ order }: { order: Order }) => {
@@ -93,7 +95,7 @@ const MyOrders = () => {
         queryFn: () => {
             const status = []
             if (filterStatus === 'Pending') {
-                status.push('Processing', 'Shipped')
+                status.push('Processing', 'Shipped', 'Draft')
             } else if (filterStatus === 'Completed') {
                 status.push('Delivered')
             } else if (filterStatus === 'Cancelled') {
@@ -176,11 +178,17 @@ const MyOrders = () => {
                             (orders || []).map((o, index: number) => (
                                 <AccordionItem value={o?._id} key={index} className="border! rounded-md px-2 mb-4">
                                     <AccordionTrigger>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
-                                            <DisplayValue label="Order Status" value={o?.orderStatus} type="status" />
-                                            <DisplayValue label="Order Date" value={simplifyDate(o?.createdAt)} />
-                                            <DisplayValue label="Items" value={o?.orderItems?.length || 0} />
-                                            <DisplayValue label="Order Value" value={formatCurrency(o?.itemsPrice)} />
+                                        <div className="flex w-full justify-between items-center">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full">
+                                                <DisplayValue label="Order Status" value={o?.orderStatus} type="status" />
+                                                <DisplayValue label="Payment Status" value={o?.paymentInfo?.status || 'Pending'} type="status" />
+                                                <DisplayValue label="Order Date" value={simplifyDate(o?.createdAt)} />
+                                                <DisplayValue label="Items" value={o?.orderItems?.length || 0} />
+                                                <DisplayValue label="Order Value" value={formatCurrency(o?.itemsPrice)} />
+                                            </div>
+                                            <Link to={`/orders/${o?._id}/detail`}>
+                                                <EyeIcon className="cursor-pointer hover:text-primary" />
+                                            </Link>
                                         </div>
                                     </AccordionTrigger>
                                     <AccordionContent className="flex flex-col gap-4 text-balance">

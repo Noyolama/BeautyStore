@@ -2,6 +2,8 @@ import api from "@/api/axiosClient"
 import z from "zod"
 
 export const ShipingSchema = z.object({
+    name: z.string().min(1, 'Required'),
+    phone: z.number().min(10, 'Required'),
     address: z.string().min(1, 'Required'),
     city: z.string().min(1, 'Required'),
     postalCode: z.string().min(1, 'Required'),
@@ -10,7 +12,7 @@ export const ShipingSchema = z.object({
 
 export const createOrder = async (data: Partial<Order>) => {
     const res = await api.post('/orders', data)
-    return res?.data
+    return res?.data?.data
 }
 
 export const fetchPaginatedOrdersForAdmin = async (page: number, itemsPerPage: number, filter: FilterType) => {

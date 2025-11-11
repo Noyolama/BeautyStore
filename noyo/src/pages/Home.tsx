@@ -4,11 +4,25 @@ import { fetchNewProducts, getAllCategory } from "@/api";
 import { ProductListCard } from "./products/_components/ProductListCard";
 import { Link } from "react-router";
 import { MoveRight } from "lucide-react";
+import { useAuth } from "@/hooks";
+import { fetchRecommendationsBasedOnUser } from "@/api/recommendations";
 
 export default function Home() {
+  const { currentUser } = useAuth()
+  const { data: recommendedProducts } = useQuery({
+    queryKey: ['recommended-list'],
+    queryFn: () => fetchRecommendationsBasedOnUser(),
+    enabled: !currentUser,
+    refetchOnWindowFocus: false, // don't refetch on tab change
+    refetchOnReconnect: false,   // don't refetch on reconnect
+    retry: false,
+  })
   const { data: newProducts } = useQuery({
     queryKey: ['new-launches'],
     queryFn: () => fetchNewProducts(),
+    refetchOnWindowFocus: false, // don't refetch on tab change
+    refetchOnReconnect: false,   // don't refetch on reconnect
+    retry: false,
   })
 
   const { data: categories } = useQuery({
@@ -23,11 +37,11 @@ export default function Home() {
         <img src="/images/Skincare/1111img3.jpg" alt="Skincare" className="mx-auto mb-1 h-50 w-50 rounded" />
         <Carousel />
       </section>
-      <section>
+      <div className="my-4">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-6">
           {categories?.map((c, index) => (
             <Link
-            to={`/products?category=${c?._id}`}
+              to={`/products?category=${c?._id}`}
               key={index}
               className="
               group relative overflow-hidden
@@ -60,8 +74,26 @@ export default function Home() {
         </div>
 
 
-      </section>
-      <section>
+      </div>
+      {
+        currentUser && (
+          <div className="my-16">
+            <div className="flex justify-between mb-2">
+              <h1 className="text-3xl font-semibold">Recommended for you</h1>
+              <Link to={'/products'} className="flex gap-2 items-center hover:underline hover:text-primary text-small">Explore More <MoveRight size={15} /></Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {
+                recommendedProducts && recommendedProducts?.map((p: Product, index: number) => (
+                  <ProductListCard key={index} product={p} />
+                ))
+              }
+            </div>
+          </div>
+        )
+      }
+
+      <div>
         <div className="flex justify-between mb-2">
           <h1 className="text-3xl font-semibold">New Launches</h1>
           <Link to={'/products'} className="flex gap-2 items-center hover:underline hover:text-primary text-small">Explore More <MoveRight size={15} /></Link>
@@ -73,7 +105,7 @@ export default function Home() {
             ))
           }
         </div>
-      </section>
+      </div>
     </main>
   );
 }

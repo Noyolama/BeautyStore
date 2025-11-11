@@ -21,6 +21,8 @@ const orderSchema = new mongoose.Schema(
       },
     ],
     shippingInfo: {
+      name: { type: String, required: true },
+      phone: { type: Number, required: true },
       address: { type: String, required: true },
       city: { type: String, required: true },
       postalCode: { type: String, required: true },
@@ -29,6 +31,7 @@ const orderSchema = new mongoose.Schema(
     paymentInfo: {
       id: { type: String }, // From payment processor like Stripe
       status: { type: String },
+      transactionId: { type: String },
     },
     paidAt: {
       type: Date,
@@ -56,8 +59,8 @@ const orderSchema = new mongoose.Schema(
     orderStatus: {
       type: String,
       required: true,
-      enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'],
-      default: 'Processing',
+      enum: ['Draft', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
+      default: 'Draft',
     },
     deliveredAt: {
       type: Date,
